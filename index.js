@@ -1,10 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
-
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
+
 const app = express();
 
 //middleware
@@ -65,7 +64,6 @@ async function run() {
       }
       const cursor = inventoryCollection.find(query);
       const inventory = await cursor.toArray();
-      console.log("showing");
       res.send(inventory);
     });
 
@@ -76,7 +74,7 @@ async function run() {
       if (decodedEmail === email) {
         const query = { email: email };
         const cursor = inventoryCollection.find(query);
-        const inventory = await cursor.toArray();
+        const inventory = await cursor;
         res.send(inventory);
       }
     });
@@ -86,7 +84,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const cursor = inventoryCollection.find(query);
-      const inventory = await cursor.toArray();
+      const inventory = await cursor;
       res.send(inventory);
     });
 
