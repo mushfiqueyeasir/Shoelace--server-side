@@ -44,7 +44,7 @@ async function run() {
     await client.connect();
     const inventoryCollection = client.db("Shoelace").collection("inventory");
 
-    //Auth
+    // //Auth
     app.post("/login", async (req, res) => {
       const user = req.body;
       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
@@ -65,6 +65,12 @@ async function run() {
       const cursor = inventoryCollection.find(query);
       const inventory = await cursor.toArray();
       res.send(inventory);
+    });
+
+    app.get("/registerData", async (req, res) => {
+      const query = {};
+      const result = await userRegisterCollection.find(query).toArray();
+      res.send(result);
     });
 
     //MyItem  Data with JWT
@@ -104,7 +110,6 @@ async function run() {
     });
 
     //Modify Product
-
     app.put("/inventory/:id", async (req, res) => {
       const id = req.params.id;
       const updateQuantity = req.body;
@@ -126,7 +131,7 @@ async function run() {
 
 run().catch(console.dir);
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   res.send("Shoeless is running!");
 });
 
