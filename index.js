@@ -26,17 +26,7 @@ const client = new MongoClient(
 
 async function run() {
   try {
-    await client.connect();
     const inventoryCollection = client.db("Shoelace").collection("inventory");
-
-    // //Auth
-    app.post("/login", async (req, res) => {
-      const user = req.body;
-      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1d",
-      });
-      res.send({ accessToken });
-    });
 
     //Get data from mongo DB
     app.get("/inventory", async (req, res) => {
@@ -59,12 +49,6 @@ async function run() {
       const cursor = inventoryCollection.findOne(query);
       const product = await cursor;
       res.send(product);
-    });
-
-    app.get("/registerData", async (req, res) => {
-      const query = {};
-      const result = await userRegisterCollection.find(query).toArray();
-      res.send(result);
     });
 
     //Add Product
@@ -101,13 +85,10 @@ async function run() {
   } finally {
   }
 }
-
-run().catch(console.dir);
+run().catch((error) => console.log(error));
 
 app.get("/", async (req, res) => {
   res.send("Shoeless is running!");
 });
 
-app.listen(port, () => {
-  console.log("Listening to port: ", port);
-});
+app.listen(port, () => console.log("Listening to port: ", port));
